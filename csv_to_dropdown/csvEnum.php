@@ -1,15 +1,25 @@
 <?php
 /*
-arg1 = path to csv file
-arg2 = index of row
-arg3 = name of the dropdown list
+Author: Reagan Wilkins
+reagan.wilkins@gmail.com
+github.com/Rwilkins1
+05/22/2018
+
+Converts a column from a csv into a dropdown list in a Sugar
+or Suite CRM environment.
+
+php csvEnum.php <path to csv> <Index of column> <Name of dropdown list>
+
+Run Quick Repair and Rebuild after execution. 
 */
 
-function openCsv($argv) {
+function openCsv($argv)
+{
   ini_set('auto_detect_line_endings', true);
   define('ROOT_DIRECTORY', '/Users/rwilkins/Documents');
   if($argv[1] == "--help") {
-    die("You've reached the help page" . PHP_EOL);
+    showHelpPage();
+    return;
   }
   $fh = fopen(ROOT_DIRECTORY . "/" . $argv[1], 'r');
   if($fh === false) {
@@ -43,12 +53,24 @@ function openCsv($argv) {
   createDropdown($argv[3], $code);
 }
 
-function createDropdown($list, $code) {
+function createDropdown($list, $code)
+{
   $fh = fopen(ROOT_DIRECTORY . "/en_us." . $list . ".php", 'w');
   if($fh === false) {
     die("File Handle is false. Please check filepath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
   }
   fwrite($fh, $code);
+}
+
+function showHelpPage()
+{
+  die("Required Syntax:\n
+  php csvEnum.php <path> <index> <dropdown list>
+
+  <path>          :: Path to csv from sugar root directory
+  <index>         :: Index of the column to turn into a dropdown (starting at 0)
+  <dropdown list> :: Name of the dropdown list. Will override if name exists
+  ");
 }
 openCsv($argv);
 
