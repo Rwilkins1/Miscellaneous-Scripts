@@ -37,3 +37,14 @@ function openCsv($argv) {
   $html .= "</select>\n";
   createDropdown($argv[3], $html);
 }
+
+function createDropdown($file, $html) {
+  $fh = fopen(ROOT_DIRECTORY . "/" . $file, 'w');
+  if($fh === false) {
+    die("File Handle is false. Please check filepath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
+  }
+  fwrite($fh, $html);
+}
+openCsv($argv);
+
+?>
