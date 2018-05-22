@@ -2,7 +2,7 @@
 /*
 arg1 = path to csv file
 arg2 = index of row
-arg3 = path to dropdown file
+arg3 = name of the dropdown list
 */
 
 function openCsv($argv) {
@@ -17,7 +17,10 @@ function openCsv($argv) {
   }
   $header = false;
   $header = fgetcsv($fh);
-  $html = "<select>\n";
+  $code = '<?php
+
+  $app_list_strings["'.$argv[3].'"]=array (
+    ';
   $accountedItems = array();
   while(!feof($fh) && $row = fgetcsv($fh)) {
     if(!$header) {
@@ -29,21 +32,23 @@ function openCsv($argv) {
       continue;
     } else {
       echo $dropdownItem . PHP_EOL;
-      $html .= "<option value='{$dropdownItem}'>" . $dropdownItem . "</option>\n";
+      $code .= "'".$dropdownItem."' => '".$dropdownItem."',
+    ";
       $accountedItems[] = $dropdownItem;
     }
   }
   fclose($fh);
-  $html .= "</select>\n";
-  createDropdown($argv[3], $html);
+  $code .= "'' => '',
+);";
+  createDropdown($argv[3], $code);
 }
 
-function createDropdown($file, $html) {
-  $fh = fopen(ROOT_DIRECTORY . "/" . $file, 'w');
+function createDropdown($list, $code) {
+  $fh = fopen(ROOT_DIRECTORY . "/en_us." . $list . ".php", 'w');
   if($fh === false) {
     die("File Handle is false. Please check filepath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
   }
-  fwrite($fh, $html);
+  fwrite($fh, $code);
 }
 openCsv($argv);
 
