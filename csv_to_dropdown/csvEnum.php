@@ -17,7 +17,7 @@ function openCsv($argv)
 {
   ini_set('auto_detect_line_endings', true);
   define('ROOT_DIRECTORY', '/path/to/sugar/custom/');
-  if($argv[1] == "--help") {
+    if($argv[1] == "--help") {
     showHelpPage();
     return;
   }
@@ -37,7 +37,7 @@ function openCsv($argv)
       $header = array_keys($row);
       continue;
     }
-    $dropdownItem = $row[$argv[2]];
+    $dropdownItem = $row[array_search($argv[2], $header)];
     $cleanItem = cleanDropdownItem($dropdownItem);
     if(array_search($dropdownItem, $accountedItems) || $dropdownItem == "" || $dropdownItem == $accountedItems[0]) {
       continue;
@@ -74,10 +74,10 @@ function createDropdown($list, $code)
 function showHelpPage()
 {
   die("
-  php csvEnum.php <path> <index> <dropdown list>
+  php csvEnum.php <path> <column name> <dropdown list>
 
   <path>          :: Path to csv from sugar root directory
-  <index>         :: Index of the column to turn into a dropdown (starting at 0)
+  <column name>   :: Name of the column in the CSV
   <dropdown list> :: Name of the dropdown list. Will override if name exists
 
   Run a Quick Repair and Rebuild after script execution
