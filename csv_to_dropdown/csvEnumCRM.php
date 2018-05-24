@@ -17,27 +17,44 @@ function openCsv($argv)
 {
   ini_set('auto_detect_line_endings', true);
   define('ROOT_DIRECTORY', '/path/to/sugar/custom/');
-    if($argv[1] == "--help") {
+  if($argv[1] == "--help") {
     showHelpPage();
     return;
   }
-  $fh = fopen(ROOT_DIRECTORY . $argv[1], 'r');
+  echo "Enter the name of the CSV file" . PHP_EOL;
+  $handle = fopen("php://stdin", "r");
+  $file = preg_replace('/[^A-ZA-z0-9_.\-]/', '', fgets($handle));
+  $fh = fopen(ROOT_DIRECTORY . $file, 'r');
+  // echo $fh . PHP_EOL;
   if($fh === false) {
     die("File Handle is false. Please check filpath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
   }
   $header = false;
   $header = fgetcsv($fh);
+
+  echo "Enter the column name to turn into a dropdown" . PHP_EOL;
+  $handle = fopen("php://stdin", "r");
+  $column = preg_replace('/[^A-ZA-z0-9_.\-]/', '', fgets($handle));
+  fclose($handle);
+
+  echo "Enter the name of the dropdown list to create" . PHP_EOL;
+  $handle = fopen("php://stdin", "r");
+  $list = preg_replace('/[^A-ZA-z0-9_.\-]/', '', fgets($handle));
+  fclose($handle);
+
   $code = '<?php
 
-  $app_list_strings["'.$argv[3].'"]=array (
+  $app_list_strings["'.$list.'"]=array (
     ';
   $accountedItems = array();
+  echo $column . PHP_EOL;
+  echo $list . PHP_EOL;
   while(!feof($fh) && $row = fgetcsv($fh)) {
     if(!$header) {
       $header = array_keys($row);
       continue;
     }
-    $dropdownItem = $row[array_search($argv[2], $header)];
+    $dropdownItem = $row[array_search($column, $header)];
     $cleanItem = cleanDropdownItem($dropdownItem);
     if(array_search($dropdownItem, $accountedItems) || $dropdownItem == "" || $dropdownItem == $accountedItems[0]) {
       continue;
@@ -51,13 +68,13 @@ function openCsv($argv)
   fclose($fh);
   $code .= "'' => '',
 );";
-  createDropdown($argv[3], $code);
+  createDropdown($list, $code);
 }
 
 function cleanDropdownItem($item)
 {
     str_replace('-', '_', $item);
-    preg_replace('/[^A-Za-z0-9\-]/', '', $item);
+    preg_replace('/[^A-Za-z0-9_\-]/', '', $item);
     str_replace(' ', '_', $item);
     return $item;
 }
@@ -65,6 +82,7 @@ function cleanDropdownItem($item)
 function createDropdown($list, $code)
 {
   $fh = fopen(ROOT_DIRECTORY . "Extension/application/Ext/Language/en_us." . $list . ".php", 'w');
+
   if($fh === false) {
     die("File Handle is false. Please check filepath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
   }
