@@ -38,11 +38,12 @@ function openCsv($argv)
       continue;
     }
     $dropdownItem = $row[$argv[2]];
+    $cleanItem = cleanDropdownItem($dropdownItem);
     if(array_search($dropdownItem, $accountedItems) || $dropdownItem == "" || $dropdownItem == $accountedItems[0]) {
       continue;
     } else {
       echo $dropdownItem . PHP_EOL;
-      $code .= "'".$dropdownItem."' => '".$dropdownItem."',
+      $code .= "'".$cleanItem."' => '".$dropdownItem."',
     ";
       $accountedItems[] = $dropdownItem;
     }
@@ -51,6 +52,14 @@ function openCsv($argv)
   $code .= "'' => '',
 );";
   createDropdown($argv[3], $code);
+}
+
+function cleanDropdownItem($item)
+{
+    str_replace('-', '_', $item);
+    preg_replace('/[^A-Za-z0-9\-]/', '', $item);
+    str_replace(' ', '_', $item);
+    return $item;
 }
 
 function createDropdown($list, $code)
@@ -64,12 +73,14 @@ function createDropdown($list, $code)
 
 function showHelpPage()
 {
-  die("Required Syntax:\n
+  die("
   php csvEnum.php <path> <index> <dropdown list>
 
   <path>          :: Path to csv from sugar root directory
   <index>         :: Index of the column to turn into a dropdown (starting at 0)
   <dropdown list> :: Name of the dropdown list. Will override if name exists
+
+  Run a Quick Repair and Rebuild after script execution
   ");
 }
 openCsv($argv);
