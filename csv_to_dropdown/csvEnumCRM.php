@@ -8,23 +8,57 @@ github.com/Rwilkins1
 Converts a column from a csv into a dropdown list in a Sugar
 or Suite CRM environment.
 
-php csvEnum.php <path to csv> <Index of column> <Name of dropdown list>
-
 Run Quick Repair and Rebuild after execution.
 */
 
-function openCsv($argv)
+function setConfiguration($argv)
 {
   ini_set('auto_detect_line_endings', true);
-  define('ROOT_DIRECTORY', '/path/to/sugar/custom/');
   if($argv[1] == "--help") {
     showHelpPage();
     return;
   }
+  $overrideRoot = array_search("-or", $argv);
+  if($overrideRoot) {
+    define('ROOT_DIRECTORY', $argv[$overrideRoot + 1]);
+  } else {
+    define('ROOT_DIRECTORY', '/Users/rwilkins/Documents/');
+  }
+
+  $overrideUpload = array_search("-ou", $argv);
+  if($overrideUpload)  {
+    echo "Overriding Upload Directory..." . PHP_EOL;
+    sleep(2);
+    define('UPLOAD_DIRECTORY', $argv[$overrideUpload + 1]);
+  } else {
+    define('UPLOAD_DIRECTORY', '/Users/rwilkins/Documents/');
+  }
+
+  $overrideLanguage = array_search("-l", $argv);
+  if($overrideLanguage) {
+    $languagesArray = ["zh_TW", "zh_CN", "uk_UA", "tr_TR", "th_TH", "sv_SE",
+    "sr_RS", "sq_AL", "sk_SK", "ru_RU", "ro_RO", "pt_PT", "pt_BR", "pl_PL",
+    "nl_NL", "nb_NO", "lv_LV", "lt_LT", "ko_KR", "ja_JP", "it_it", "hu_HU",
+    "hr_HR", "he_IL", "fr_FR", "fi_FI", "et_EE", "es_LA", "es_ES", "en_us",
+    "en_UK", "el_EL", "de_DE", "da_DK", "cs_CZ", "ca_ES", "bg_BG", "ar_SA"];
+    $input = $argv[$overrideLanguage + 1];
+    if(array_search($input, $languagesArray) || $input == $languagesArray[0]) {
+      define('LANGUAGE', $input);
+    } else {
+      die("Sorry, the specified language key is invalid. Please enter a valid language key" . PHP_EOL);
+    }
+  } else {
+    define('LANGUAGE', 'en_us');
+  }
+  openCsv();
+}
+
+function openCsv()
+{
   echo "Enter the name of the CSV file" . PHP_EOL;
   $handle = fopen("php://stdin", "r");
   $file = preg_replace('/[^A-ZA-z0-9_.\-]/', '', fgets($handle));
-  $fh = fopen(ROOT_DIRECTORY . $file, 'r');
+  $fh = fopen(UPLOAD_DIRECTORY . $file, 'r');
   // echo $fh . PHP_EOL;
   if($fh === false) {
     die("File Handle is false. Please check filpath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
@@ -81,7 +115,7 @@ function cleanDropdownItem($item)
 
 function createDropdown($list, $code)
 {
-  $fh = fopen(ROOT_DIRECTORY . "Extension/application/Ext/Language/en_us." . $list . ".php", 'w');
+  $fh = fopen(ROOT_DIRECTORY . "Extension/application/Ext/Language/" . LANGUAGE . ".{$list}.php", 'w');
 
   if($fh === false) {
     die("File Handle is false. Please check filepath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
@@ -91,16 +125,39 @@ function createDropdown($list, $code)
 
 function showHelpPage()
 {
+  if(strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+    system('cls');
+  } else {
+    system('clear');
+  }
   die("
-  php csvEnum.php <path> <column name> <dropdown list>
+  ------------------------------------------------------
+  ------------------------------------------------------
 
-  <path>          :: Path to csv from sugar root directory
-  <column name>   :: Name of the column in the CSV
-  <dropdown list> :: Name of the dropdown list. Will override if name exists
+  Author: Reagan Wilkins
+  reagan.wilkins@gmail.com
+  github.com/Rwilkins1
+  05/22/2018
+
+  Converts a column from a csv into a Sugar/Suite CRM
+  compatible dropdown language file
 
   Run a Quick Repair and Rebuild after script execution
+
+  ------------------------------------------------------
+  ------------------------------------------------------
+
+  Flags:
+
+  -or       :: Override the root directory (path to Sugar/Suite instance)
+  -ou       :: Override the upload directory (path to csv file)
+  -l        :: Specify a language other than American English
+
+
+
   ");
 }
-openCsv($argv);
+
+setConfiguration($argv);
 
 ?>
