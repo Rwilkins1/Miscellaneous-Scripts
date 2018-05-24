@@ -10,18 +10,18 @@ or Suite CRM environment.
 
 php csvEnum.php <path to csv> <Index of column> <Name of dropdown list>
 
-Run Quick Repair and Rebuild after execution. 
+Run Quick Repair and Rebuild after execution.
 */
 
 function openCsv($argv)
 {
   ini_set('auto_detect_line_endings', true);
-  define('ROOT_DIRECTORY', '/Users/rwilkins/Documents');
+  define('ROOT_DIRECTORY', '/path/to/sugar/custom/');
   if($argv[1] == "--help") {
     showHelpPage();
     return;
   }
-  $fh = fopen(ROOT_DIRECTORY . "/" . $argv[1], 'r');
+  $fh = fopen(ROOT_DIRECTORY . $argv[1], 'r');
   if($fh === false) {
     die("File Handle is false. Please check filpath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
   }
@@ -55,7 +55,7 @@ function openCsv($argv)
 
 function createDropdown($list, $code)
 {
-  $fh = fopen(ROOT_DIRECTORY . "/en_us." . $list . ".php", 'w');
+  $fh = fopen(ROOT_DIRECTORY . "Extension/application/Ext/Language/en_us." . $list . ".php", 'w');
   if($fh === false) {
     die("File Handle is false. Please check filepath for root directory: " . ROOT_DIRECTORY . PHP_EOL);
   }
