@@ -1,6 +1,8 @@
 <?php
+require_once("../.local_paths.php");
 $jpgs = false;
-foreach(glob("/path/to/desktop/*.jpg") as $file) {
+echo $desktop . PHP_EOL;
+foreach(glob("{$desktop}/*.jpg") as $file) {
 	$jpgs = true;
 	echo "Moving file: " . $file . " off of Desktop..." . PHP_EOL;
 }
