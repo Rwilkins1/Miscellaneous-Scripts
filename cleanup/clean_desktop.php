@@ -20,5 +20,6 @@ function removeFiles($extension)
 removeFiles("*.jpg");
 removeFiles("*.png");
 removeFiles("*.pdf");
+removeFiles("*.jpeg");
 removeFiles("Screen Shot*");
 ?>
