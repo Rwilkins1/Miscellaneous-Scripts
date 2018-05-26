@@ -1,5 +1,7 @@
 <?php
-foreach(glob("/Users/Reagan/Desktop/pictures/*.jpg") as $file) {
-	echo $file . PHP_EOL;
+$jpgs = false;
+foreach(glob("/path/to/desktop/*.jpg") as $file) {
+	$jpgs = true;
+	echo "Moving file: " . $file . " off of Desktop..." . PHP_EOL;
 }
 ?>
