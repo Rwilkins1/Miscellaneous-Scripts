@@ -1,4 +1,12 @@
 <?php
+/*
+Author: Reagan Wilkins
+reagan.wilkins@gmail.com
+github.com/Rwilkins1
+05/26/2018
+
+For use in cleaning up the Desktop directory on a local machine
+*/
 
 function removeFiles($extension)
 {
