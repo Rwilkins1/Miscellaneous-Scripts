@@ -52,7 +52,7 @@ Must be run before csvEnum.php can start running.
       " . '$defaultLanguage' . " = '{$language}';
     ?>
     ";
-    $fh = fopen("directoryConfig.php", 'w');
+    $fh = fopen(".directoryConfig.php", 'w');
     if($fh === false) {
       die("There was an error creating config file" . PHP_EOL);
     }

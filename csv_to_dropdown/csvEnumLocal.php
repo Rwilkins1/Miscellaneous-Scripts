@@ -10,7 +10,7 @@ or Suite CRM environment.
 
 Run Quick Repair and Rebuild after execution.
 */
-if(filesize('directoryConfig.php') == 0) {
+if(filesize('.directoryConfig.php') == 0) {
   die("
   The installer has not been run. Please enter the following command:
   'php install.php'
