@@ -11,17 +11,51 @@ class packageCreator
   public function checkDirectory()
   {
     // Check for package directory, creates one if doesn't exist.
+    if(file_exists("package")) {
+      return true;
+    } else {
+      mkdir("package");
+      return true;
+    }
   }
 
-  public function checkZipFile()
+  public function checkFiles()
   {
-    // Check for a zip file, remove if exists
+    // Check for files, remove if exists
+    $packageItems = glob('package/{,.}*', GLOB_BRACE);
+    foreach($packageItems as $item) {
+
+      if($item !== "package/." && $item !== "package/..") {
+        if(is_file($item)) {
+          echo $item . " is a file" . PHP_EOL;
+          unlink($item);
+        } else if(is_dir($item)) {
+          echo $item . " is a directory" . PHP_EOL;
+          $handle = opendir($item);
+
+          while($file = readdir($handle)) {
+            if($file != "." && $file != "..") {
+              if(!is_dir($item."/".$file)) {
+                echo $file . " is a file" . PHP_EOL;
+                unlink($item."/".$file);
+              } else {
+                delete_directory($item."/".$file);
+              }
+            }
+          }
+
+          closedir($handle);
+          rmdir($item);
+        }
+      }
+    }
   }
 
   public function setUp()
   {
-    checkDirectory();
-    checkZipFile();
+    // Check if preparations need to be made before building the package
+    $this->checkDirectory();
+    $this->checkFiles();
     return true;
   }
 
