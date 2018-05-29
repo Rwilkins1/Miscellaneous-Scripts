@@ -62,6 +62,11 @@ class packageCreator
   public function addFiles($files)
   {
     // Add files created by script to package directory, add to an array for manifest
+    $manifestArray = array();
+    foreach($files as $file => $path) {
+      copy($file, "package/".$file);
+    }
+    return true;
   }
 
   public function buildManifest($files)
