@@ -160,6 +160,15 @@ function createDropdown($list, $code)
   fwrite($fh, $code);
 }
 
+function createPackage($list)
+{
+  require_once("createPackage.php");
+  $files = array(LANGUAGE . ".{$list}.php" => ROOT_DIRECTORY);
+  $package = new packageCreator();
+  $package->setUp();
+  $package->addFiles();
+}
+
 function showHelpPage()
 {
   if(strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
