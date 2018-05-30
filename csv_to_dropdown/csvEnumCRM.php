@@ -166,7 +166,8 @@ function createPackage($list)
   $files = array(LANGUAGE . ".{$list}.php" => ROOT_DIRECTORY);
   $package = new packageCreator();
   $package->setUp();
-  $package->addFiles();
+  $package->addFiles($files);
+  $package->buildManifest($files);
 }
 
 function showHelpPage()
