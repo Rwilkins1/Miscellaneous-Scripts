@@ -8,6 +8,14 @@ github.com/Rwilkins1
 class packageCreator
 {
 
+  function getInput()
+  {
+    $handle = fopen("php://stdin", "r");
+    $input = trim(fgets($handle));
+    fclose($handle);
+    return $input;
+  }
+
   public function checkDirectory()
   {
     // Check for package directory, creates one if doesn't exist.
@@ -29,7 +37,8 @@ class packageCreator
         if(is_file($item)) {
           echo $item . " is a file" . PHP_EOL;
           unlink($item);
-        } else if(is_dir($item)) {
+        }
+        else if(is_dir($item)) {
           echo $item . " is a directory" . PHP_EOL;
           $handle = opendir($item);
 
@@ -38,7 +47,8 @@ class packageCreator
               if(!is_dir($item."/".$file)) {
                 echo $file . " is a file" . PHP_EOL;
                 unlink($item."/".$file);
-              } else {
+              }
+              else {
                 delete_directory($item."/".$file);
               }
             }
@@ -72,6 +82,54 @@ class packageCreator
   public function buildManifest($files)
   {
     // Accept user input and the list of files to build the manifest.php file.
+    $manifestHandle = fopen("package/manifest.php", "w");
+    $code = "<?php
+    ".'$manifest'." = array(";
+
+    echo "What exact sugar versions are acceptable for this package (separate with commas)?" . PHP_EOL;
+    $versions = $this->getInput();
+    $code .= "
+    'acceptable_sugar_versions' => array(
+      'exact_matches' => array(";
+
+    $versions = explode(",", $versions);
+    foreach($versions as $version) {
+      $version = trim($version);
+      $code .= "
+      '{$version}',";
+    }
+    $code .= "
+      ),
+    ),";
+
+    echo "What exact sugar flavors (ENT, PRO, etc) are acceptable for this package (separate with commas)?" . PHP_EOL;
+    $flavors = $this->getInput();
+
+    $code .= "
+    'acceptable_sugar_flavors' => array (";
+
+    $flavors = explode(",", $flavors);
+    foreach($flavors as $flavor) {
+      $flavor = trim($flavor);
+      $code .= "'{$flavor}', ";
+    }
+    $code .= "),";
+    //
+    // echo "Who is the author of this package?" . PHP_EOL;
+    // $author = $this->getInput();
+    //
+    // echo "Enter a brief description of what this package does" . PHP_EOL;
+    // $description = $this->getInput();
+    //
+    // echo "Enter the name of the package" . PHP_EOL;
+    // $name = $this->getInput();
+    //
+    // echo "What is this package's version?" . PHP_EOL;
+    // $version = $this->getInput();
+
+    // echo "Finally, enter the ID of this package" . PHP_EOL;
+
+    fwrite($manifestHandle, $code);
   }
 
   public function zipDirectory()
