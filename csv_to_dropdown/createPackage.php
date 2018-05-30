@@ -98,6 +98,7 @@ class packageCreator
       $code .= "
       '{$version}',";
     }
+    substr($code, 0, -1);
     $code .= "
       ),
     ),";
@@ -113,6 +114,7 @@ class packageCreator
       $flavor = trim($flavor);
       $code .= "'{$flavor}', ";
     }
+    substr($code, 0, -2);
     $code .= "),";
     //
     // echo "Who is the author of this package?" . PHP_EOL;
