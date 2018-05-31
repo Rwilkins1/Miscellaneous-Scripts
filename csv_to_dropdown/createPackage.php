@@ -85,7 +85,7 @@ class packageCreator
     // Accept user input and the list of files to build the manifest.php file.
     $manifestHandle = fopen("package/manifest.php", "w");
     $code = "<?php
-    ".'$manifest'." = array(";
+ ".'$manifest'." = array(";
 
     $versions = $this->getInput("What exact sugar versions are acceptable for this package (separate with commas)?");
     $versions = explode(", ", $versions);
@@ -148,7 +148,7 @@ class packageCreator
     ),
   );";
     fwrite($manifestHandle, $code);
-    $this->zipDirectory($id, $version);
+    // $this->zipDirectory($id, $version);
   }
 
   public function zipDirectory($id, $version)
