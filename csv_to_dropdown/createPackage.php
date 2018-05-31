@@ -8,8 +8,9 @@ github.com/Rwilkins1
 class packageCreator
 {
 
-  function getInput()
+  function getInput($message)
   {
+    echo $message . PHP_EOL;
     $handle = fopen("php://stdin", "r");
     $input = trim(fgets($handle));
     fclose($handle);
@@ -86,8 +87,7 @@ class packageCreator
     $code = "<?php
     ".'$manifest'." = array(";
 
-    echo "What exact sugar versions are acceptable for this package (separate with commas)?" . PHP_EOL;
-    $versions = $this->getInput();
+    $versions = $this->getInput("What exact sugar versions are acceptable for this package (separate with commas)?");
     $code .= "
     'acceptable_sugar_versions' => array(
       'exact_matches' => array(
@@ -95,25 +95,19 @@ class packageCreator
       ),
     ),";
 
-    echo "What exact sugar flavors (ENT, PRO, etc) are acceptable for this package (separate with commas)?" . PHP_EOL;
-    $flavors = $this->getInput();
-
+    $flavors = $this->getInput("What exact sugar flavors (ENT, PRO, etc) are acceptable for this package (separate with commas)?");
     $code .= "
     'acceptable_sugar_flavors' => array ({$flavors}),";
     //
-    // echo "Who is the author of this package?" . PHP_EOL;
-    // $author = $this->getInput();
+    // $author = $this->getInput("Who is the author of this package?");
     //
-    // echo "Enter a brief description of what this package does" . PHP_EOL;
-    // $description = $this->getInput();
+    // $description = $this->getInput("Enter a brief description of what this package does");
     //
-    // echo "Enter the name of the package" . PHP_EOL;
-    // $name = $this->getInput();
+    // $name = $this->getInput("Enter the name of the package");
     //
-    // echo "What is this package's version?" . PHP_EOL;
-    // $version = $this->getInput();
-
-    // echo "Finally, enter the ID of this package" . PHP_EOL;
+    // $version = $this->getInput("What is this package's version?");
+    // 
+    // $id = $this->getInput("Finally, enter the ID of this package");
 
     fwrite($manifestHandle, $code);
   }
