@@ -141,6 +141,23 @@ function openCsv()
 );";
 
   createDropdown($list, $code);
+    echo "Do you want to create another Dropdown (WARNING: Cannot override current directory or language settings) (Y/N)?" . PHP_EOL;
+  $createAnother = getInput();
+  if(($createAnother == "N" || $createAnother == "n") && $oneFile) {
+    // createPackage($list);
+    echo "No need to create another" . PHP_EOL;
+  } else if(($createAnother == "N" || $createAnother == "n") && $oneFile == false) {
+    // createPackage($listArray);
+    echo "We created more than one file, and now we rest" . PHP_EOL;
+  } else {
+    $listArray[] = $list;
+    echo "Creating another Dropdown..." . PHP_EOL;
+    echo "List Array items are..." . PHP_EOL;
+    foreach($listArray as $item) {
+      echo "-{$item}" . PHP_EOL;
+    }
+    openCsv(false, $listArray);
+  }
 }
 
 function cleanDropdownItem($item)
