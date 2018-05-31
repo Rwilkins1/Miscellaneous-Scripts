@@ -18,8 +18,9 @@ if(filesize('.directoryConfig.php') == 0) {
   " . PHP_EOL);
 }
 
-function getInput()
+function getInput($message)
 {
+  echo $message . PHP_EOL;
   $handle = fopen("php://stdin", "r");
   $input = trim(fgets($handle));
   fclose($handle);
