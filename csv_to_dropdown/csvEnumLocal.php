@@ -182,8 +182,17 @@ function createDropdown($list, $code)
 
 function createPackage($list)
 {
-  require_once("createPackage.php");
-  $files = array(LANGUAGE . ".{$list}.php" => ROOT_DIRECTORY);
+  require("createPackage.php");
+  $files = array();
+  if(is_array($list)) {
+    foreach($list as $item) {
+      $name = LANGUAGE . ".{$item}.php";
+      $files[$name] = ROOT_DIRECTORY;
+    }
+  } else {
+    $name = LANGUAGE . ".{$list}.php";
+    $files[$name] = ROOT_DIRECTORY;
+  }
   $package = new packageCreator();
   $package->setUp();
   $package->addFiles($files);
