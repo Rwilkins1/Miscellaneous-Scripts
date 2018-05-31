@@ -90,16 +90,8 @@ class packageCreator
     $versions = $this->getInput();
     $code .= "
     'acceptable_sugar_versions' => array(
-      'exact_matches' => array(";
-
-    $versions = explode(",", $versions);
-    foreach($versions as $version) {
-      $version = trim($version);
-      $code .= "
-      '{$version}',";
-    }
-    substr($code, 0, -1);
-    $code .= "
+      'exact_matches' => array(
+        {$versions}
       ),
     ),";
 
@@ -107,15 +99,7 @@ class packageCreator
     $flavors = $this->getInput();
 
     $code .= "
-    'acceptable_sugar_flavors' => array (";
-
-    $flavors = explode(",", $flavors);
-    foreach($flavors as $flavor) {
-      $flavor = trim($flavor);
-      $code .= "'{$flavor}', ";
-    }
-    substr($code, 0, -2);
-    $code .= "),";
+    'acceptable_sugar_flavors' => array ({$flavors}),";
     //
     // echo "Who is the author of this package?" . PHP_EOL;
     // $author = $this->getInput();
