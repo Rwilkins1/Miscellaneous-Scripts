@@ -88,33 +88,93 @@ class packageCreator
     ".'$manifest'." = array(";
 
     $versions = $this->getInput("What exact sugar versions are acceptable for this package (separate with commas)?");
+    $versions = explode(", ", $versions);
     $code .= "
     'acceptable_sugar_versions' => array(
       'exact_matches' => array(
-        {$versions}
+        ";
+    foreach($versions as $version) {
+      $code .= "'{$version}', ";
+    }
+    $code = substr($code, 0, -2);
+    $code .= "
       ),
     ),";
 
     $flavors = $this->getInput("What exact sugar flavors (ENT, PRO, etc) are acceptable for this package (separate with commas)?");
+    $flavors = explode(", ", $flavors);
     $code .= "
-    'acceptable_sugar_flavors' => array ({$flavors}),";
-    //
-    // $author = $this->getInput("Who is the author of this package?");
-    //
-    // $description = $this->getInput("Enter a brief description of what this package does");
-    //
-    // $name = $this->getInput("Enter the name of the package");
-    //
-    // $version = $this->getInput("What is this package's version?");
-    // 
-    // $id = $this->getInput("Finally, enter the ID of this package");
+    'acceptable_sugar_flavors' => array (";
+    foreach($flavors as $flavor) {
+      $code .= "'{$flavor}', ";
+    }
+    $code = substr($code, 0, -2);
+    $code .= "),";
 
+    $author = $this->getInput("Who is the author of this package?");
+    $code .= "
+    'author' => '{$author}',";
+
+    $description = $this->getInput("Enter a brief description of what this package does");
+    $code .= "
+    'description' => '{$description}',
+    'is_uninstallable' => true,";
+
+    $name = $this->getInput("Enter the name of the package");
+    $now = gmdate('Y-m-d h:m:s');
+    $code .= "
+    'name' => '{$name}',
+    'published_date' => '{$now}',
+    'type' => 'module',";
+
+    $version = $this->getInput("What is this package's version?");
+    $code .= "
+    'version' => '{$version}',
+  );";
+
+    $id = $this->getInput("Finally, enter the ID of this package");
+    $code .="\n".'$installdefs'." = array(
+    'id' => '{$id}',
+    'copy' => array(";
+
+    foreach($files as $file => $path) {
+      $code .= "
+      array(
+          'from' => '<basepath>/package/{$file}',
+          'to' => '{$path}{$file}',
+      ),";
+    }
+    $code .= "
+    ),
+  );";
     fwrite($manifestHandle, $code);
+    $this->zipDirectory($id, $version);
   }
 
-  public function zipDirectory()
+  public function zipDirectory($id, $version)
   {
     // Creates the package zip file
+    $path = realpath('package');
+
+    $zip = new ZipArchive();
+    $zip->open("{$path}/{$id}.{$version}.zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    $files = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($path),
+      RecursiveIteratorIterator::LEAVES_ONLY
+    );
+    // $files = glob('package/{,.}*', GLOB_BRACE);
+    foreach($files as $name => $file) {
+      if(!$file->isDir()) {
+        $file = basename($file);
+        echo $file . PHP_EOL;
+        // $filePath = $file->getRealPath();
+        // $relativepath = substr($filePath, strlen($path) + 1);
+
+        $zip->addFile("package/{$file}");
+      }
+    }
+    $zip->close();
   }
 }
 ?>
