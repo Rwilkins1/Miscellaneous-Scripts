@@ -79,8 +79,7 @@ function setConfiguration($argv)
   if($overrideLanguage) {
     $language = getLanguage($argv[$overrideLanguage + 1], $defaultLanguage);
     while($language === false) {
-      echo "The language key you entered is invalid, please enter a valid language key or type 'cancel' to default to American English" . PHP_EOL;
-      $input = getInput();
+      $input = getInput("The language key you entered is invalid, please enter a valid language key or type 'cancel' to default to American English");
       $language = getLanguage($input, $defaultLanguage);
     }
     if($language != $defaultLanguage) {
@@ -98,8 +97,7 @@ function setConfiguration($argv)
 
 function openCsv()
 {
-  echo "Enter the name of the CSV file" . PHP_EOL;
-  $file = getInput();
+  $file = getInput("Enter the name of the CSV file");
   $fh = fopen(UPLOAD_DIRECTORY . $file, 'r');
   // echo $fh . PHP_EOL;
   if($fh === false) {
@@ -108,11 +106,9 @@ function openCsv()
   $header = false;
   $header = fgetcsv($fh);
 
-  echo "Enter the column name to turn into a dropdown" . PHP_EOL;
-  $column = getInput();
+  $column = getInput("Enter the column name to turn into a dropdown");
 
-  echo "Enter the name of the dropdown list to create" . PHP_EOL;
-  $list = getInput();
+  $list = getInput("Enter the name of the dropdown list to create");
 
   $code = '<?php
 
