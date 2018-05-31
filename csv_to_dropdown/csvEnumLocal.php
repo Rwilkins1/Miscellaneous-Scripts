@@ -141,7 +141,13 @@ function openCsv()
 );";
 
   createDropdown($list, $code);
-    echo "Do you want to create another Dropdown (WARNING: Cannot override current directory or language settings) (Y/N)?" . PHP_EOL;
+    checkForAnotherDropdown($list, $oneFile, $listArray);
+}
+
+function checkForAnotherDropdown($list, $oneFile, $listArray)
+{
+
+  echo "Do you want to create another Dropdown (WARNING: Cannot override current directory or language settings) (Y/N)?" . PHP_EOL;
   $createAnother = getInput();
   if(($createAnother == "N" || $createAnother == "n") && $oneFile) {
     // createPackage($list);
