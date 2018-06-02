@@ -143,14 +143,14 @@ function openCsv()
 
 function checkForAnotherDropdown($list, $oneFile, $listArray)
 {
-
-  echo "Do you want to create another Dropdown (WARNING: Cannot override current directory or language settings) (Y/N)?" . PHP_EOL;
-  $createAnother = getInput();
+  $createAnother = getInput("Do you want to create another Dropdown (WARNING: Cannot override current directory or language settings) (Y/N)?");
   if(($createAnother == "N" || $createAnother == "n") && $oneFile) {
-    // createPackage($list);
+    $list = array($list);
+    createPackage($list);
     echo "No need to create another" . PHP_EOL;
   } else if(($createAnother == "N" || $createAnother == "n") && $oneFile == false) {
-    // createPackage($listArray);
+    $listArray[] = $list;
+    createPackage($listArray);
     echo "We created more than one file, and now we rest" . PHP_EOL;
   } else {
     $listArray[] = $list;
@@ -184,14 +184,13 @@ function createPackage($list)
 {
   require("createPackage.php");
   $files = array();
-  if(is_array($list)) {
-    foreach($list as $item) {
-      $name = LANGUAGE . ".{$item}.php";
-      $files[$name] = ROOT_DIRECTORY;
-    }
-  } else {
-    $name = LANGUAGE . ".{$list}.php";
+  foreach($list as $item) {
+    echo "Item is: " . $item . PHP_EOL;
+    $name = LANGUAGE . ".{$item}.php";
     $files[$name] = ROOT_DIRECTORY;
+  }
+  foreach($files as $file) {
+    echo "Preparing to copy file: " . $file . " to the package directory..." . PHP_EOL;
   }
   $package = new packageCreator();
   $package->setUp();
