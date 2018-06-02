@@ -92,10 +92,16 @@ function setConfiguration($argv)
   } else {
     define('LANGUAGE', $defaultLanguage);
   }
+
+  if(array_search("-p", $argv)) {
+    define('MAKE_PACKAGE', true);
+  } else {
+    define('MAKE_PACKAGE', false);
+  }
   openCsv();
 }
 
-function openCsv()
+function openCsv($oneFile = true, $listArray = array())
 {
   $file = getInput("Enter the name of the CSV file");
   $fh = fopen(UPLOAD_DIRECTORY . $file, 'r');
