@@ -92,6 +92,13 @@ function setConfiguration($argv)
   } else {
     define('LANGUAGE', $defaultLanguage);
   }
+
+  if(array_search("-p", $argv)) {
+    define('MAKE_PACKAGE', true);
+  } else {
+    define('MAKE_PACKAGE', false);
+  }
+
   openCsv();
 }
 
@@ -182,20 +189,22 @@ function createDropdown($list, $code)
 
 function createPackage($list)
 {
-  require("createPackage.php");
-  $files = array();
-  foreach($list as $item) {
-    echo "Item is: " . $item . PHP_EOL;
-    $name = LANGUAGE . ".{$item}.php";
-    $files[$name] = ROOT_DIRECTORY;
-  }
-  foreach($files as $file) {
-    echo "Preparing to copy file: " . $file . " to the package directory..." . PHP_EOL;
-  }
-  $package = new packageCreator();
-  $package->setUp();
-  $package->addFiles($files);
-  $package->buildManifest($files);
+    if(MAKE_PACKAGE) {
+      require("createPackage.php");
+      $files = array();
+      foreach($list as $item) {
+        echo "Item is: " . $item . PHP_EOL;
+        $name = LANGUAGE . ".{$item}.php";
+        $files[$name] = ROOT_DIRECTORY;
+      }
+      foreach($files as $file) {
+        echo "Preparing to copy file: " . $file . " to the package directory..." . PHP_EOL;
+      }
+      $package = new packageCreator();
+      $package->setUp();
+      $package->addFiles($files);
+      $package->buildManifest($files);    
+    }
 }
 
 function showHelpPage()
