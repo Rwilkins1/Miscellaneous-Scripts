@@ -22,7 +22,19 @@ function getInput($message)
 // If a directory is needed, builds it, if not, adds files to existing one
 function buildAddDirectory($exists, $name)
 {
-
+	if($exists) {
+		if(!file_exists($name)) {
+			return false;
+		} else {
+			return true;
+		}
+	} else {
+		if(mkdir($name)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 // creates the file in question
@@ -37,6 +49,13 @@ function kickstartProcess()
 	$exists = getInput("Create new directory (0), or use existing directory (1)?");
 	$name = getInput("Enter name of directory");
 	$directorySet = buildAddDirectory($exists, $name);
+
+	if($directorySet) {
+		buildFile(c);
+		buildFile(r);
+		buildFile(u);
+		buildFile(d);
+	}
 }
 
 kickstartProcess();
