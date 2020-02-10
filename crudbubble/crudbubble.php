@@ -20,7 +20,7 @@ function getInput($message)
 }
 
 // If a directory is needed, builds it, if not, adds files to existing one
-function buildAddDirectory($action, $name)
+function buildAddDirectory($exists, $name)
 {
 
 }
@@ -30,6 +30,16 @@ function buildFile($file)
 {
 
 }
+
+// main function that drives the script
+function kickstartProcess()
+{
+	$exists = getInput("Create new directory (0), or use existing directory (1)?");
+	$name = getInput("Enter name of directory");
+	$directorySet = buildAddDirectory($exists, $name);
+}
+
+kickstartProcess();
 
 
 
