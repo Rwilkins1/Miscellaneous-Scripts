@@ -10,9 +10,13 @@ eliminating the need to manually create a file for each step.
 */
 
 // prompts the script's user for an answer
-function readInput($prompt)
+function getInput($message)
 {
-
+	echo $message . PHP_EOL;
+	$handle = fopen("php:stdin", "r");
+	$input = trim(fgets($handle));
+	fclose($handle);
+	return $input;
 }
 
 // If a directory is needed, builds it, if not, adds files to existing one
@@ -26,6 +30,7 @@ function buildFile($file)
 {
 
 }
+
 
 
 ?>
