@@ -26,10 +26,12 @@ function buildAddDirectory($exists, $name)
 		if(!file_exists($name)) {
 			return false;
 		} else {
+			define('DIRECTORY', $name);
 			return true;
 		}
 	} else {
 		if(mkdir($name)) {
+			define('DIRECTORY', $name);
 			return true;
 		} else {
 			return false;
@@ -38,10 +40,31 @@ function buildAddDirectory($exists, $name)
 }
 
 // creates the file in question
-function buildFile($file)
+function buildFile($module, $file)
+{
+	$fh = fopen(DIRECTORY . "/{$module}.{$file}.php", 'w');
+	if($fh === false) {
+		die("File Handle is false. Please check filepath!");
+	}
+	fwrite($fh, $code);
+}
+
+// checks if the user wants to create CRUD for another module
+function checkForAnotherModule()
 {
 
 }
+
+// function that calls the function to build specific files
+function crudController($module)
+{
+	buildFile($module, 'create');
+	buildFile($module, 'visit');
+	buildFile($module, 'show');
+	buildFile($module, 'edit');
+	checkForAnotherModule();
+}
+
 
 // main function that drives the script
 function kickstartProcess()
@@ -49,12 +72,11 @@ function kickstartProcess()
 	$exists = getInput("Create new directory (0), or use existing directory (1)?");
 	$name = getInput("Enter name of directory");
 	$directorySet = buildAddDirectory($exists, $name);
-
+	$module = getInput("Enter the name of the module you wish to build");
 	if($directorySet) {
-		buildFile(c);
-		buildFile(r);
-		buildFile(u);
-		buildFile(d);
+		crudController($module);
+	} else {
+		die("Directory could not be validated or created" . PHP_EOL);
 	}
 }
 
