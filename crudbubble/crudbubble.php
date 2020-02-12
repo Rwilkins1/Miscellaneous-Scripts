@@ -19,6 +19,21 @@ function getInput($message)
 	return $input;
 }
 
+// checks for and creates (if needed) the db, models, public, utils, views directories
+function checkForSubDirectories($directory)
+{
+
+}
+
+// controls the cheking process for the db, models, public, utils, views directories
+function subDirectoryController()
+{
+	$directoriesArray = ['db', 'models', 'public', 'utils', 'views'];
+	foreach($directoriesArray as $directory) {
+		checkForSubDirectories($directory);
+	}
+}
+
 // If a directory is needed, builds it, if not, adds files to existing one
 function buildAddDirectory($exists, $name)
 {
@@ -27,12 +42,21 @@ function buildAddDirectory($exists, $name)
 			return false;
 		} else {
 			define('DIRECTORY', $name);
-			return true;
+			if(subDirectoryController()) {
+				return true;				
+			} else {
+				return false;
+			}
 		}
 	} else {
 		if(mkdir($name)) {
 			define('DIRECTORY', $name);
-			return true;
+			if(subDirectoryController()) {
+				return true;				
+			} else {
+				return false;
+			}
+
 		} else {
 			return false;
 		}
@@ -45,10 +69,23 @@ function buildModuleModel($module)
 
 }
 
+// builds the actual code for base files such as db, login, etc.
+function buildBaseFileCode($directory, $file)
+{
+
+}
+
 // builds files such as the db, login, base model
 function buildBaseFiles($module)
 {
-
+	$baseFileArray = ['db' => 'login.php', 'db' => 'connect.php', 'db' => 'hashedpw.php',
+					  'models' => 'Basemodel.php',
+					  'public' => 'auth.login.php', 'public' => 'auth.logout.php',
+					  'utils' => 'Auth.php', 'utils' => 'Input.php'];
+	foreach($baseFileArray as $directory => $file) {
+		buildBaseFileCode($directory, $file);		
+	}
+	buildModuleModel($module);
 }
 
 // builds the specific code for each file
@@ -84,10 +121,10 @@ function checkForAnotherModule()
 // function that calls the function to build specific files
 function crudController($module)
 {
-	buildFile($module, 'create');
-	buildFile($module, 'visit');
-	buildFile($module, 'show');
-	buildFile($module, 'edit');
+	$fileArray = ['create', 'visit', 'show', 'edit'];
+	foreach($fileArray as $file) {
+		buildFile($module, $file);
+	}
 	checkForAnotherModule();
 }
 
