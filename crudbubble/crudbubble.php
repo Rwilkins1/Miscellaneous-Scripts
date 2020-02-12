@@ -39,6 +39,18 @@ function buildAddDirectory($exists, $name)
 	}
 }
 
+// builds the model file for the specified module
+function buildModuleModel($module)
+{
+
+}
+
+// builds files such as the db, login, base model
+function buildBaseFiles($module)
+{
+
+}
+
 // builds the specific code for each file
 function buildCode($module, $file)
 {
@@ -88,7 +100,7 @@ function kickstartProcess()
 	$directorySet = buildAddDirectory($exists, $name);
 	$module = getInput("Enter the name of the module you wish to build");
 	if($directorySet) {
-		crudController($module);
+		buildBaseFiles($module);
 	} else {
 		die("Directory could not be validated or created" . PHP_EOL);
 	}
