@@ -43,11 +43,12 @@ function buildAddDirectory($exists, $name)
 function buildCode($module, $file)
 {
 	$code = "<?php 
+	session_start();
 	require_once '../utils/Input.php';
 	require_once '../utils/Auth.php';
 	require_once '../models/".$module.".php';
 	require_once '../models/Basemodel.php';
-	session_start();";
+	";
 }
 
 // creates the file in question
