@@ -39,6 +39,17 @@ function buildAddDirectory($exists, $name)
 	}
 }
 
+// builds the specific code for each file
+function buildCode($module, $file)
+{
+	$code = "<?php 
+	require_once '../utils/Input.php';
+	require_once '../utils/Auth.php';
+	require_once '../models/".$module.".php';
+	require_once '../models/Basemodel.php';
+	session_start();";
+}
+
 // creates the file in question
 function buildFile($module, $file)
 {
@@ -46,7 +57,9 @@ function buildFile($module, $file)
 	if($fh === false) {
 		die("File Handle is false. Please check filepath!");
 	}
+	$code = buildCode($module, $file);
 	fwrite($fh, $code);
+	fclose($fh);
 }
 
 // checks if the user wants to create CRUD for another module
