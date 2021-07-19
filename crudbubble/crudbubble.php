@@ -64,29 +64,37 @@ function buildAddDirectory($exists, $name)
 }
 
 // builds the model file for the specified module
-function buildModuleModel($module)
-{
+// function buildModuleModel($module)
+// {
 
-}
+// }
 
-// builds the actual code for base files such as db, login, etc.
-function buildBaseFileCode($directory, $file)
-{
+// // builds the actual code for base files such as db, login, etc.
+// function buildBaseFileCode($directory, $file)
+// {
+// 	if($directory == "db") {
 
-}
+// 	} else if($directory == "models") {
 
-// builds files such as the db, login, base model
-function buildBaseFiles($module)
-{
-	$baseFileArray = ['db' => 'login.php', 'db' => 'connect.php', 'db' => 'hashedpw.php',
-					  'models' => 'Basemodel.php',
-					  'public' => 'auth.login.php', 'public' => 'auth.logout.php',
-					  'utils' => 'Auth.php', 'utils' => 'Input.php'];
-	foreach($baseFileArray as $directory => $file) {
-		buildBaseFileCode($directory, $file);		
-	}
-	buildModuleModel($module);
-}
+// 	} else if($directory == "public") {
+
+// 	} else if($directory =="utils") {
+
+// 	}
+// }
+
+// // builds files such as the db, login, base model
+// function buildBaseFiles($module)
+// {
+// 	$baseFileArray = ['db' => 'login.php', 'db' => 'connect.php', 'db' => 'hashedpw.php',
+// 					  'models' => 'Basemodel.php',
+// 					  'public' => 'auth.login.php', 'public' => 'auth.logout.php',
+// 					  'utils' => 'Auth.php', 'utils' => 'Input.php'];
+// 	foreach($baseFileArray as $directory => $file) {
+// 		buildBaseFileCode($directory, $file);		
+// 	}
+// 	buildModuleModel($module);
+// }
 
 // builds the specific code for each file
 function buildCode($module, $file)
@@ -115,7 +123,13 @@ function buildFile($module, $file)
 // checks if the user wants to create CRUD for another module
 function checkForAnotherModule()
 {
-
+	$anotherModule = getInput("Would you like to create another module (1), or not (0)?");
+	if($anotherModule) {
+		$module = getInput("Enter the name of the module you wish to build");
+		buildBaseFiles($module);
+	} else {
+		die("Thanks for using CRUDbubble!" . PHP_EOL);
+	}
 }
 
 // function that calls the function to build specific files
@@ -137,7 +151,7 @@ function kickstartProcess()
 	$directorySet = buildAddDirectory($exists, $name);
 	$module = getInput("Enter the name of the module you wish to build");
 	if($directorySet) {
-		buildBaseFiles($module);
+		crudController($module);
 	} else {
 		die("Directory could not be validated or created" . PHP_EOL);
 	}
