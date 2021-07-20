@@ -124,7 +124,15 @@ function buildCode($module, $file)
 		</div>";
 
 	} else if ($file == "edit") {
-
+		$code .= "
+		<div id = 'edit".$module."'>
+			<h3>Edit $aan $module</h3>
+			<form method='POST' action='' enctype='multipart/form-data'>
+				<label>Field</label>
+				<input type='text' name='field' value='<?= $".$module."->field; ?>'>
+			</form>
+			<button type='submit'>Submit</button>
+		</div>";
 	}
 
 	return $code;
