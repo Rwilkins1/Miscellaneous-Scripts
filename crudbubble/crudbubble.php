@@ -12,51 +12,43 @@ eliminating the need to manually create a file for each step.
 // prompts the script's user for an answer
 function getInput($message)
 {
-	echo $message . PHP_EOL;
-	$handle = fopen("php:stdin", "r");
-	$input = trim(fgets($handle));
-	fclose($handle);
+	fwrite(STDOUT, $message);
+	$input = trim(fgets(STDIN));
 	return $input;
 }
 
-// checks for and creates (if needed) the db, models, public, utils, views directories
-function checkForSubDirectories($directory)
-{
+// // checks for and creates (if needed) the db, models, public, utils, views directories
+// function checkForSubDirectories($directory)
+// {
 
-}
+// }
 
-// controls the cheking process for the db, models, public, utils, views directories
-function subDirectoryController()
-{
-	$directoriesArray = ['db', 'models', 'public', 'utils', 'views'];
-	foreach($directoriesArray as $directory) {
-		checkForSubDirectories($directory);
-	}
-}
+// // controls the cheking process for the db, models, public, utils, views directories
+// function subDirectoryController()
+// {
+// 	$directoriesArray = ['db', 'models', 'public', 'utils', 'views'];
+// 	foreach($directoriesArray as $directory) {
+// 		checkForSubDirectories($directory);
+// 	}
+// }
 
 // If a directory is needed, builds it, if not, adds files to existing one
 function buildAddDirectory($exists, $name)
 {
-	if($exists) {
-		if(!file_exists($name)) {
-			return false;
-		} else {
+	echo $exists . PHP_EOL;
+	if($exists == 1) {
+		echo "Looking for directory $name..." . PHP_EOL;
+		if(is_dir($name)) {
 			define('DIRECTORY', $name);
-			if(subDirectoryController()) {
-				return true;				
-			} else {
-				return false;
-			}
+			return true;
+		} else {
+			echo "Can't find the directory" . PHP_EOL;
+			return false;
 		}
 	} else {
 		if(mkdir($name)) {
 			define('DIRECTORY', $name);
-			if(subDirectoryController()) {
-				return true;				
-			} else {
-				return false;
-			}
-
+			return true;
 		} else {
 			return false;
 		}
@@ -99,13 +91,43 @@ function buildAddDirectory($exists, $name)
 // builds the specific code for each file
 function buildCode($module, $file)
 {
-	$code = "<?php 
-	session_start();
-	require_once '../utils/Input.php';
-	require_once '../utils/Auth.php';
-	require_once '../models/".$module.".php';
-	require_once '../models/Basemodel.php';
-	";
+	$firstChar = substr($module, 0);
+	if($firstChar == "A" || $firstChar == "E" || $firstChar == "I" || $firstChar == "O" || $firstChar == "U") {
+		$aan = "an";
+	} else {
+		$aan = "a";
+	}
+	$code = "
+	<?php 
+		session_start();
+	?>
+
+	<!DOCTYPE html>
+	<html lang='en'>
+		<body>";
+
+	if($file == "create") {
+		$code .= "
+		<div id = 'createForm'>
+			<h3>Create $aan $module</h3>
+					<form method='POST' action='' enctype='multipart/form-data'>
+					  	<label>Field</label>
+					  	<input type='text' name='field'>
+					  	<button type='submit'>Submit</button>
+					</form>
+		</div>";
+
+	} else if ($file == "show") {
+		$code .= "
+		<div id = 'show".$module."'>
+			<h3><?= $".$module."->name ?></h3>
+		</div>";
+
+	} else if ($file == "edit") {
+
+	}
+
+	return $code;
 }
 
 // creates the file in question
@@ -113,9 +135,11 @@ function buildFile($module, $file)
 {
 	$fh = fopen(DIRECTORY . "/{$module}.{$file}.php", 'w');
 	if($fh === false) {
-		die("File Handle is false. Please check filepath!");
+		die("File Handle is false. Please check filepath!" . PHP_EOL);
 	}
 	$code = buildCode($module, $file);
+	$code .= "
+	</body>";
 	fwrite($fh, $code);
 	fclose($fh);
 }
@@ -123,9 +147,9 @@ function buildFile($module, $file)
 // checks if the user wants to create CRUD for another module
 function checkForAnotherModule()
 {
-	$anotherModule = getInput("Would you like to create another module (1), or not (0)?");
+	$anotherModule = getInput("Would you like to create another module (1), or not (0)?" . PHP_EOL);
 	if($anotherModule) {
-		$module = getInput("Enter the name of the module you wish to build");
+		$module = getInput("Enter the name of the module you wish to build" . PHP_EOL);
 		buildBaseFiles($module);
 	} else {
 		die("Thanks for using CRUDbubble!" . PHP_EOL);
@@ -135,7 +159,7 @@ function checkForAnotherModule()
 // function that calls the function to build specific files
 function crudController($module)
 {
-	$fileArray = ['create', 'visit', 'show', 'edit'];
+	$fileArray = ['create', 'show', 'edit'];
 	foreach($fileArray as $file) {
 		buildFile($module, $file);
 	}
@@ -146,15 +170,14 @@ function crudController($module)
 // main function that drives the script
 function kickstartProcess()
 {
-	$exists = getInput("Create new directory (0), or use existing directory (1)?");
-	$name = getInput("Enter name of directory");
+	$exists = getInput("Create new directory (0), or use existing directory (1)?" . PHP_EOL);
+	$name = getInput("Enter name of directory" . PHP_EOL);
 	$directorySet = buildAddDirectory($exists, $name);
-	$module = getInput("Enter the name of the module you wish to build");
-	if($directorySet) {
-		crudController($module);
-	} else {
-		die("Directory could not be validated or created" . PHP_EOL);
+	if(!$directorySet) {
+		die("Directory could not be created or validated" . PHP_EOL);
 	}
+	$module = getInput("Enter the name of the module you wish to build" . PHP_EOL);
+	crudController($module);
 }
 
 kickstartProcess();
