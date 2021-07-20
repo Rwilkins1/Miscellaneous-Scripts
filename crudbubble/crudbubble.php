@@ -158,7 +158,7 @@ function checkForAnotherModule()
 	$anotherModule = getInput("Would you like to create another module (1), or not (0)?" . PHP_EOL);
 	if($anotherModule) {
 		$module = getInput("Enter the name of the module you wish to build" . PHP_EOL);
-		buildBaseFiles($module);
+		crudController($module);
 	} else {
 		die("Thanks for using CRUDbubble!" . PHP_EOL);
 	}
@@ -171,7 +171,7 @@ function crudController($module)
 	foreach($fileArray as $file) {
 		buildFile($module, $file);
 	}
-	checkForAnotherModule();
+	checkForAnotherModule($module);
 }
 
 
