@@ -109,7 +109,7 @@ function buildCode($module, $file, $fields)
 
 	if($file == "create") {
 		$code .= "
-			<div id = 'createForm'>
+			<div id = 'create".$module."'>
 				<h3>Create $aan $module</h3>
 				<form method='POST' action='' enctype='multipart/form-data'>";
 				while($fieldIndex <= $fields) {
@@ -126,20 +126,25 @@ function buildCode($module, $file, $fields)
 
 	} else if ($file == "show") {
 		$code .= "
-		<div id = 'show".$module."'>
-			<h3><?= $".$module."->name ?></h3>
-		</div>";
+			<div id = 'show".$module."'>
+				<h3><?= $".$module."->name ?></h3>
+			</div>";
 
 	} else if ($file == "edit") {
 		$code .= "
-		<div id = 'edit".$module."'>
-			<h3>Edit $aan $module</h3>
-			<form method='POST' action='' enctype='multipart/form-data'>
-				<label>Field</label>
-				<input type='text' name='field' value='<?= $".$module."->field; ?>'>
-			</form>
-			<button type='submit'>Submit</button>
-		</div>";
+			<div id = 'edit".$module."'>
+				<h3>Edit $aan $module</h3>
+				<form method='POST' action='' enctype='multipart/form-data'>";
+				while($fieldIndex <= $fields) {
+					$code .= "
+					<label>Field".$fieldIndex."</label>
+					<input type='text' name='field' value='<?= $".$module."->field".$fieldIndex."; ?>'>";
+					$fieldIndex++;					
+				}
+				$code .= "
+					<button type='submit'>Submit</button>
+				</form>
+			</div>";
 	}
 
 	return $code;
