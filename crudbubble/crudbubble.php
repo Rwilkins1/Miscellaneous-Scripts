@@ -89,8 +89,9 @@ function buildAddDirectory($exists, $name)
 // }
 
 // builds the specific code for each file
-function buildCode($module, $file)
+function buildCode($module, $file, $fields)
 {
+	$fieldIndex = 1;
 	$firstChar = substr($module, 0);
 	if($firstChar == "A" || $firstChar == "E" || $firstChar == "I" || $firstChar == "O" || $firstChar == "U") {
 		$aan = "an";
@@ -108,14 +109,20 @@ function buildCode($module, $file)
 
 	if($file == "create") {
 		$code .= "
-		<div id = 'createForm'>
-			<h3>Create $aan $module</h3>
-					<form method='POST' action='' enctype='multipart/form-data'>
-					  	<label>Field</label>
-					  	<input type='text' name='field'>
-					  	<button type='submit'>Submit</button>
-					</form>
-		</div>";
+			<div id = 'createForm'>
+				<h3>Create $aan $module</h3>
+				<form method='POST' action='' enctype='multipart/form-data'>";
+				while($fieldIndex <= $fields) {
+					$code .=  	"
+					<label>Field".$fieldIndex."</label>
+					<input type='text' name='field".$fieldIndex."'>";
+					$fieldIndex++;
+					
+				}
+				$code .=	  "
+					<button type='submit'>Submit</button>
+				</form>
+			</div>";
 
 	} else if ($file == "show") {
 		$code .= "
@@ -139,15 +146,15 @@ function buildCode($module, $file)
 }
 
 // creates the file in question
-function buildFile($module, $file)
+function buildFile($module, $file, $fields)
 {
 	$fh = fopen(DIRECTORY . "/{$module}.{$file}.php", 'w');
 	if($fh === false) {
 		die("File Handle is false. Please check filepath!" . PHP_EOL);
 	}
-	$code = buildCode($module, $file);
+	$code = buildCode($module, $file, $fields);
 	$code .= "
-	</body>";
+		</body>";
 	fwrite($fh, $code);
 	fclose($fh);
 }
@@ -165,11 +172,11 @@ function checkForAnotherModule()
 }
 
 // function that calls the function to build specific files
-function crudController($module)
+function crudController($module, $fields)
 {
 	$fileArray = ['create', 'show', 'edit'];
 	foreach($fileArray as $file) {
-		buildFile($module, $file);
+		buildFile($module, $file, $fields);
 	}
 	checkForAnotherModule($module);
 }
@@ -185,7 +192,8 @@ function kickstartProcess()
 		die("Directory could not be created or validated" . PHP_EOL);
 	}
 	$module = getInput("Enter the name of the module you wish to build" . PHP_EOL);
-	crudController($module);
+	$numFields = getInput("How many fields will users have to fill out/edit?" . PHP_EOL);
+	crudController($module, $numFields);
 }
 
 kickstartProcess();
