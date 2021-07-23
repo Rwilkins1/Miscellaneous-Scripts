@@ -145,6 +145,12 @@ function buildCode($module, $file, $fields)
 					<button type='submit'>Submit</button>
 				</form>
 			</div>";
+	} else if ($file == "landing") {
+		$code .= "
+			<div id = 'greeting'>
+				<h1>Welcome to the {$module} App!</h1>
+				<h3>Your one-stop shop for all things {$module}!</h3>
+			</div>";
 	}
 
 	return $code;
@@ -152,8 +158,12 @@ function buildCode($module, $file, $fields)
 
 // creates the file in question
 function buildFile($module, $file, $fields)
-{
-	$fh = fopen(DIRECTORY . "/{$module}.{$file}.php", 'w');
+{	
+	if($file == "landing") {
+		$fh = fopen(DIRECTORY . "/{$module}.{$file}.html", 'w');
+	} else {
+		$fh = fopen(DIRECTORY . "/{$module}.{$file}.php", 'w');
+	}
 	if($fh === false) {
 		die("File Handle is false. Please check filepath!" . PHP_EOL);
 	}
@@ -179,7 +189,7 @@ function checkForAnotherModule()
 // function that calls the function to build specific files
 function crudController($module, $fields)
 {
-	$fileArray = ['create', 'show', 'edit'];
+	$fileArray = ['landing', 'create', 'show', 'edit'];
 	foreach($fileArray as $file) {
 		buildFile($module, $file, $fields);
 	}
